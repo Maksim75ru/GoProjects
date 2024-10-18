@@ -1,33 +1,71 @@
 package main
 
 import (
-	"errors"
 	"fmt"
+	"math"
 )
 
-const pi float32 = 3.1415
-
 func main() {
-	printCircleArea(0)
-	printCircleArea(6)
+	testMap()
 }
 
-func printCircleArea(radius int) {
-	circleArea, err := calculateCircleArea(radius)
-	if err != nil {
-		fmt.Println(err.Error())
-		return
+func testMap() {
+	ages := make(map[string]int)
+
+	ages["Максим"] = 30
+	ages["Лолита"] = 30
+	ages["Виктория"] = 17
+
+	fmt.Println("ages:", ages)
+	fmt.Printf("Максиму %d лет\n", ages["Максим"])
+
+	newAges := map[string]int{
+		"Олег":   32,
+		"Виктор": 22,
+	}
+	age, exists := newAges["Антон"]
+	if !exists {
+		fmt.Println("Антона нет в списке")
+	} else {
+		fmt.Printf("Антону %d лет", age)
 	}
 
-	fmt.Printf("Радиус: %d см.\n", radius)
-	fmt.Println("Формула для расчета площади круга: S=pr2")
+	ages2 := ages
 
-	fmt.Printf("Площадь круга: %f32 см. кв.\n", circleArea)
+	delete(ages, "Максим")
+
+	fmt.Println("ages", ages)
+	fmt.Println("ages2", ages2)
+
 }
 
-func calculateCircleArea(radius int) (float32, error) {
-	if radius <= 0 {
-		return float32(0), errors.New("Радиус круга не может быть отрицательным!")
+func ChangeOrder() {
+	arr := []string{"a1", "b1", "c1", "d1"}
+
+	var new_arr []string
+
+	for i := len(arr) - 1; i >= 0; i-- {
+		new_arr = append(new_arr, arr[i])
 	}
-	return float32(radius) * float32(radius) * pi, nil
+}
+
+func testCopyAndMake() {
+	arr := []string{"a1", "b1", "c1", "d1"}
+
+	new_arr := make([]string, 4)
+
+	copy(new_arr, arr)
+
+	fmt.Println("arr:", arr)
+	fmt.Println("new_arr:", new_arr)
+}
+
+func RaisingItems(n int) {
+	for i := 1; i <= n; i++ {
+		fmt.Printf("2 в степени %d = %.f\n", i, math.Pow(2, 3))
+	}
+}
+
+func fillArray(arr []string) []string {
+	return append(arr, "e1")
 }
