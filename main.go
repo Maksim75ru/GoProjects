@@ -34,7 +34,7 @@ func testMap() {
 
 	delete(ages, "Максим")
 
-	fmt.Println("ages", ages)
+	fmt.Println("ageeees", ages)
 	fmt.Println("ages2", ages2)
 
 }
