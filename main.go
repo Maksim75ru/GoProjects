@@ -5,8 +5,71 @@ import (
 	"math"
 )
 
+type absractEmployee struct { // Объявление обычно происходит вне тела функции, чтобы можно было создать экземпляр в любом месте программы
+	name   string
+	sex    string
+	age    int
+	salary int
+}
+
+func newAbsractEmployee(name, sex string, age, salary int) absractEmployee {
+	// Такие функции называются конструкторами или инициализаторами. Важно начинать название с newНазваниСтруктуры
+	return absractEmployee{
+		name:   name,
+		sex:    sex,
+		age:    age,
+		salary: salary,
+	}
+}
+
+func (e absractEmployee) getInfo() string {
+	// Метод структуры absractEmployee - func (s structName) methodName(arg1 type, arg2 type ...) returnType {}
+	// e - это ресивер, хорошая практика 1-2 символа в названии
+	return fmt.Sprintf("Сотрудник: %s\nВозраст: %d\nЗарплата: %d\n", e.name, e.age, e.salary)
+}
+
+func setName(e *absractEmployee, name string) {
+	e.name = name
+}
+
 func main() {
-	testMap()
+	testStructure()
+}
+
+func testStructure() {
+	// employee := struct {  // Объявление структуры с данными
+	// 	name   string
+	// 	sex    string
+	// 	age    int
+	// 	salary int
+	// }{
+	// 	name:   "Вася",
+	// 	sex:    "М",
+	// 	age:    25,
+	// 	salary: 1500,
+	// }
+	// fmt.Printf("%+v\n", employee)
+
+	type employee struct { // Объявление абстрактной структуры. За пределами функции невозможно создать экземпляр
+		name   string
+		sex    string
+		age    int
+		salary int
+	}
+
+	employee1 := employee{
+		name:   "Вася",
+		sex:    "М",
+		age:    25,
+		salary: 1500,
+	}
+	fmt.Printf("%+v\n", employee1)
+
+	// Создание возможно за пределами, т.к. объявили структуру за пределами тела функций
+	petyaEmployee := newAbsractEmployee("Петя", "М", 30, 2000)
+	fmt.Println(petyaEmployee.getInfo())
+	setName(&petyaEmployee, "Oleg")
+	fmt.Println(petyaEmployee.getInfo())
 }
 
 func testMap() {
