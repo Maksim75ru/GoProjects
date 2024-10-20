@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"math"
 )
@@ -30,10 +31,6 @@ func (e absractEmployee) getInfo() string {
 
 func setName(e *absractEmployee, name string) {
 	e.name = name
-}
-
-func main() {
-	testStructure()
 }
 
 func testStructure() {
@@ -73,7 +70,7 @@ func testStructure() {
 }
 
 func testMap() {
-	ages := make(map[string]int)
+	ages := make(map[string]int) // make используется для инициализации пустой мапы
 
 	ages["Максим"] = 30
 	ages["Лолита"] = 30
@@ -131,4 +128,120 @@ func RaisingItems(n int) {
 
 func fillArray(arr []string) []string {
 	return append(arr, "e1")
+}
+
+// ООПшное
+
+type employee struct {
+	id     int
+	name   string
+	age    int
+	salary int
+}
+
+type storage interface {
+	insert(e employee) error
+	get(id int) (employee, error)
+	delete(id int) error
+}
+
+type memoryStorage struct {
+	data map[int]employee
+}
+
+func newMemoryStorage() *memoryStorage {
+	// Это инициализатор или конструктор для memoryStorage, который возвращает указатель на структуру и инициализирует мапу при создании объекта
+	// Если не инициализировать мапу, то получим ошибку при попытке записи в не инициализированную мапу
+	return &memoryStorage{
+		data: make(map[int]employee),
+	}
+}
+
+func (s *memoryStorage) insert(e employee) error {
+	s.data[e.id] = e
+	return nil
+}
+
+func (s *memoryStorage) get(id int) (employee, error) {
+	e, exists := s.data[id]
+	if !exists {
+		return employee{}, errors.New("employee with such id doesn't exist")
+	}
+	return e, nil
+}
+
+func (s *memoryStorage) delete(id int) error {
+	delete(s.data, id)
+	return nil
+}
+
+type dumbStorate struct{}
+
+func newDumbStorage() *dumbStorate {
+	return &dumbStorate{}
+}
+
+func (d dumbStorate) insert(e employee) error {
+	fmt.Printf("Вставка пользователя с id: %d прошла успешно\n", e.id)
+	return nil
+}
+
+func (d dumbStorate) get(id int) (employee, error) {
+	e := employee{
+		id: id,
+	}
+	return e, nil
+}
+
+func (d dumbStorate) delete(id int) error {
+	fmt.Printf("Удаление пользователя с id: %d прошло успешно\n", id)
+	return nil
+}
+
+func printType(value interface{}) {
+	// любой тип в программе на Go по умолчанию удовлетворяет пустой интерфейс
+	// Работая с пустыми интерфейсами, мы имеем возможность проверять интерфейс на его динамический тип
+	switch value.(type) {
+	case int:
+		fmt.Println("тип аргумента int")
+	case string:
+		fmt.Println("тип аргумента string")
+	default:
+		fmt.Println("тип аргумента не int и не string")
+	}
+}
+
+func testStorage() {
+	var s storage
+
+	fmt.Println("s == nil", s == nil)
+	fmt.Printf("type of s: %T\n", s)
+
+	s = newMemoryStorage()
+	// Без проблем присвоили в переменную s типа storage объект *newMemoryStorage,
+	// т.к. этот тип соответствует интерфейсу, потому что обладает всеми необходимыми методами
+
+	fmt.Println("s == nil", s == nil)
+	fmt.Printf("type of s: %T\n", s)
+	fmt.Println("______________")
+
+	s = newDumbStorage()
+	// Мы заменили один тип на другой, который удовлетворяет требованиям интерфейса. Такое свойствой называется ВЗАИМОЗАМЕНЯЕМОСТЬ
+	// Создали 2 структуры, которые реализовывают один и тот же интерфейс - это ПОЛИМОРФИЗМ
+
+	fmt.Println("s", s)
+	fmt.Printf("type of s: %T\n", s)
+
+	s = nil
+
+	fmt.Println("s", s)
+	fmt.Printf("type of s: %T\n", s)
+
+	printType(5)
+	printType("stroka")
+	printType([]string{"слайсы", "тоже"})
+}
+
+func main() {
+	testStorage()
 }
