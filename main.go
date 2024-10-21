@@ -242,6 +242,19 @@ func testStorage() {
 	printType([]string{"слайсы", "тоже"})
 }
 
+func testModules() {
+	// s := scheduler.NewScheduler()
+
+	// s.Add(
+	// 	context.Background(),
+	// 	func(ctx context.Context) { fmt.Printf("Текущее время: %s\n", time.Now()) },
+	// 	time.Second,
+	// )
+
+	// time.Sleep(time.Minute)
+
+}
+
 func main() {
-	testStorage()
+	testModules()
 }
