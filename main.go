@@ -1,6 +1,7 @@
 package main
 
 import (
+	"GoProject/storage"
 	"fmt"
 	"math"
 )
@@ -53,11 +54,10 @@ func testStructure() {
 	// 	salary int
 	// }
 
-	employee1 := employee{
-		name:   "Вася",
-		sex:    "М",
-		age:    25,
-		salary: 1500,
+	employee1 := storage.Employee{
+		Name:   "Вася",
+		Age:    25,
+		Salary: 1500,
 	}
 	fmt.Printf("%+v\n", employee1)
 
@@ -142,6 +142,19 @@ func testModules() {
 
 }
 
+func spawnEmployees(s storage.Storage) {
+	for i := 1; i <= 10; i++ {
+		s.Insert(storage.Employee{Id: i})
+	}
+}
+
 func main() {
-	testModules()
+	ms := storage.NewMemoryStorage()
+	ds := storage.NewDumbStorage()
+
+	spawnEmployees(ms)
+
+	fmt.Println(ms.Get(3))
+
+	spawnEmployees(ds)
 }

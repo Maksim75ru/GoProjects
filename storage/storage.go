@@ -8,36 +8,36 @@ import (
 // ООПшное
 
 type Employee struct {
-	id     int
-	name   string
-	age    int
-	salary int
+	Id     int
+	Name   string
+	Age    int
+	Salary int
 }
 
-type storage interface {
-	insert(e Employee) error
-	get(id int) (Employee, error)
-	delete(id int) error
+type Storage interface {
+	Insert(e Employee) error
+	Get(id int) (Employee, error)
+	Delete(id int) error
 }
 
-type memoryStorage struct {
+type MemoryStorage struct {
 	data map[int]Employee
 }
 
-func newMemoryStorage() *memoryStorage {
+func NewMemoryStorage() *MemoryStorage {
 	// Это инициализатор или конструктор для memoryStorage, который возвращает указатель на структуру и инициализирует мапу при создании объекта
 	// Если не инициализировать мапу, то получим ошибку при попытке записи в не инициализированную мапу
-	return &memoryStorage{
+	return &MemoryStorage{
 		data: make(map[int]Employee),
 	}
 }
 
-func (s *memoryStorage) insert(e Employee) error {
-	s.data[e.id] = e
+func (s *MemoryStorage) Insert(e Employee) error {
+	s.data[e.Id] = e
 	return nil
 }
 
-func (s *memoryStorage) get(id int) (Employee, error) {
+func (s *MemoryStorage) Get(id int) (Employee, error) {
 	e, exists := s.data[id]
 	if !exists {
 		return Employee{}, errors.New("Employee with such id doesn't exist")
@@ -45,30 +45,30 @@ func (s *memoryStorage) get(id int) (Employee, error) {
 	return e, nil
 }
 
-func (s *memoryStorage) delete(id int) error {
+func (s *MemoryStorage) Delete(id int) error {
 	delete(s.data, id)
 	return nil
 }
 
-type dumbStorate struct{}
+type DumbStorate struct{}
 
-func newDumbStorage() *dumbStorate {
-	return &dumbStorate{}
+func NewDumbStorage() *DumbStorate {
+	return &DumbStorate{}
 }
 
-func (d dumbStorate) insert(e Employee) error {
-	fmt.Printf("Вставка пользователя с id: %d прошла успешно\n", e.id)
+func (d DumbStorate) Insert(e Employee) error {
+	fmt.Printf("Вставка пользователя с id: %d прошла успешно\n", e.Id)
 	return nil
 }
 
-func (d dumbStorate) get(id int) (Employee, error) {
+func (d DumbStorate) Get(id int) (Employee, error) {
 	e := Employee{
-		id: id,
+		Id: id,
 	}
 	return e, nil
 }
 
-func (d dumbStorate) delete(id int) error {
+func (d DumbStorate) Delete(id int) error {
 	fmt.Printf("Удаление пользователя с id: %d прошло успешно\n", id)
 	return nil
 }
@@ -87,12 +87,12 @@ func printType(value interface{}) {
 }
 
 func testStorage() {
-	var s storage
+	var s Storage
 
 	fmt.Println("s == nil", s == nil)
 	fmt.Printf("type of s: %T\n", s)
 
-	s = newMemoryStorage()
+	s = NewMemoryStorage()
 	// Без проблем присвоили в переменную s типа storage объект *newMemoryStorage,
 	// т.к. этот тип соответствует интерфейсу, потому что обладает всеми необходимыми методами
 
@@ -100,7 +100,7 @@ func testStorage() {
 	fmt.Printf("type of s: %T\n", s)
 	fmt.Println("______________")
 
-	s = newDumbStorage()
+	s = NewDumbStorage()
 	// Мы заменили один тип на другой, который удовлетворяет требованиям интерфейса. Такое свойствой называется ВЗАИМОЗАМЕНЯЕМОСТЬ
 	// Создали 2 структуры, которые реализовывают один и тот же интерфейс - это ПОЛИМОРФИЗМ
 
@@ -115,8 +115,4 @@ func testStorage() {
 	printType(5)
 	printType("stroka")
 	printType([]string{"слайсы", "тоже"})
-}
-
-func main() {
-	printType("stroka")
 }
