@@ -1,6 +1,7 @@
 package main
 
 import (
+	"GoProject/shape"
 	"GoProject/storage"
 	"fmt"
 	"math"
@@ -148,7 +149,7 @@ func spawnEmployees(s storage.Storage) {
 	}
 }
 
-func main() {
+func testStoragePackage() {
 	ms := storage.NewMemoryStorage()
 	ds := storage.NewDumbStorage()
 
@@ -157,4 +158,18 @@ func main() {
 	fmt.Println(ms.Get(3))
 
 	spawnEmployees(ds)
+}
+
+func testShapePackage() {
+	s := shape.NewSquare(5)
+	r := shape.NewRectangle(4, 5)
+
+	fmt.Printf("Площадь квадрата: %d\n", s.GetSquare())
+	fmt.Printf("Площадь прямоугольника: %d\n", r.GetSquare())
+
+}
+
+func main() {
+	testStoragePackage()
+	testShapePackage()
 }
