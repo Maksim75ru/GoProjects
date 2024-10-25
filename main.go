@@ -5,6 +5,7 @@ import (
 	"GoProject/storage"
 	"fmt"
 	"math"
+	"time"
 )
 
 type absractEmployee struct { // Объявление обычно происходит вне тела функции, чтобы можно было создать экземпляр в любом месте программы
@@ -169,7 +170,60 @@ func testShapePackage() {
 
 }
 
+func testGorutines() {
+	t := time.Now()
+
+	fmt.Printf("Старт: %s\n", t.Format(time.RFC3339))
+
+	result1 := make(chan int)
+	result2 := make(chan int)
+
+	go calculateSomething(300, result1)
+	go calculateSomething(500, result2)
+
+	fmt.Println(<-result1)
+	fmt.Println(<-result2)
+
+	fmt.Printf("Время выполнения программы: %s\n", time.Since(t))
+}
+
+func calculateSomething(n int, res chan int) {
+	t := time.Now()
+
+	result := 0
+	for i := 0; i <= n; i++ {
+		result += i * 2
+		time.Sleep(time.Millisecond * 3)
+	}
+
+	fmt.Printf("Результат: %d; Прошло времени: %s\n", result, time.Since(t))
+	res <- result
+}
+func testGorutines2() {
+	numbers := make(chan int)
+
+	go generateNumbers(1000, numbers)
+
+	for {
+		number, ok := <-numbers
+		fmt.Println(number, ok)
+
+		if !ok {
+			break
+		}
+	}
+
+}
+
+func generateNumbers(n int, res chan int) {
+	for i := 0; i <= n; i++ {
+		res <- i * 2
+	}
+
+	close(res)
+}
+
 func main() {
-	testStoragePackage()
-	testShapePackage()
+	testGorutines2()
+
 }
