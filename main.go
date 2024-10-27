@@ -247,39 +247,35 @@ func testGorutines3() {
 	}
 }
 
-func calculateFactorial(n int, ch chan int) {
-	if n == 1 {
-		fromChannel := <-ch
-		ch <- n * fromChannel
-		close(ch)
+func factorial(n int) int {
+	if n == 0 {
+		return 1
+	}
+	time.Sleep(10 * time.Millisecond)
+	return n * factorial(n-1)
+}
 
+// Функция для отображения спиннера
+func spinner() {
+	for _, r := range `\|/` {
+		fmt.Printf("\r%c", r) // Перезапись строки для спиннера
+		time.Sleep(100 * time.Millisecond)
 	}
 
-	_, ok := <-ch
+}
 
-	if !ok {
-		ch <- n
-	} else {
-		fromChannel := <-ch
-		ch <- n * fromChannel
-	}
+func testFactorial() {
+	number := 45
 
-	go calculateFactorial(n-1, ch)
+	// Запускаем спиннер в горутине
+	go spinner()
+
+	// Вычисляем факториал
+	result := factorial(number)
+	// Выводим результат
+	fmt.Printf("\rФакториал %d равен: %d\n", number, result)
 }
 
 func main() {
-	n := 45
-	ch := make(chan int)
-
-	go func() {
-		for _, r := range `\|/` {
-			fmt.Printf("\r%c", r)
-			time.Sleep(time.Millisecond * 100)
-		}
-	}()
-
-	go calculateFactorial(n, ch)
-
-	result := <-ch
-	fmt.Printf("Факториал числа %d равен %d\n", n, result)
+	testFactorial()
 }
