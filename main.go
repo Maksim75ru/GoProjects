@@ -199,6 +199,7 @@ func calculateSomething(n int, res chan int) {
 	fmt.Printf("Результат: %d; Прошло времени: %s\n", result, time.Since(t))
 	res <- result
 }
+
 func testGorutines2() {
 	numbers := make(chan int)
 
@@ -223,7 +224,62 @@ func generateNumbers(n int, res chan int) {
 	close(res)
 }
 
-func main() {
-	testGorutines2()
+func testGorutines3() {
+	number := make(chan int)
 
+	go func() {
+		fmt.Println("РАБОТАЕТ АНОНИМНАЯ ФУНКЦИЯ1")
+		number <- 42
+	}()
+
+	go func() {
+		fmt.Println("РАБОТАЕТ АНОНИМНАЯ ФУНКЦИЯ2")
+		number <- 55
+	}()
+
+	time.Sleep(time.Millisecond * 100)
+
+	select {
+	case n := <-number:
+		fmt.Println(n)
+	default:
+		fmt.Println("nothing, empty, completle nothing")
+	}
+}
+
+func calculateFactorial(n int, ch chan int) {
+	if n == 1 {
+		fromChannel := <-ch
+		ch <- n * fromChannel
+		close(ch)
+
+	}
+
+	_, ok := <-ch
+
+	if !ok {
+		ch <- n
+	} else {
+		fromChannel := <-ch
+		ch <- n * fromChannel
+	}
+
+	go calculateFactorial(n-1, ch)
+}
+
+func main() {
+	n := 45
+	ch := make(chan int)
+
+	go func() {
+		for _, r := range `\|/` {
+			fmt.Printf("\r%c", r)
+			time.Sleep(time.Millisecond * 100)
+		}
+	}()
+
+	go calculateFactorial(n, ch)
+
+	result := <-ch
+	fmt.Printf("Факториал числа %d равен %d\n", n, result)
 }
